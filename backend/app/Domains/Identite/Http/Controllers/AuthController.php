@@ -5,6 +5,7 @@ namespace App\Domains\Identite\Http\Controllers;
 use App\Domains\Identite\Http\Requests\LoginRequest;
 use App\Domains\Identite\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         if (! $user->is_active) {
@@ -44,6 +45,7 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         Auth::guard('web')->logout();
+
         if ($request->hasSession()) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();
