@@ -44,17 +44,14 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
-      - name: Run migrations
-        run: php artisan migrate --force
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: ":memory:"
+      - name: Prepare SQLite database
+        run: touch database/database.sqlite
 
-      - name: Seed database
-        run: php artisan db:seed --force
+      - name: Run migrations and seed
+        run: php artisan migrate --seed --force
         env:
           DB_CONNECTION: sqlite
-          DB_DATABASE: ":memory:"
+          DB_DATABASE: database/database.sqlite
 
       - name: Run Pint (lint)
         run: ./vendor/bin/pint --test
@@ -63,10 +60,10 @@ jobs:
         run: ./vendor/bin/phpstan analyse --memory-limit=256M
 
       - name: Run Pest tests
-        run: ./vendor/bin/pest --parallel
+        run: ./vendor/bin/pest
         env:
           DB_CONNECTION: sqlite
-          DB_DATABASE: ":memory:"
+          DB_DATABASE: database/database.sqlite
 
   frontend:
     name: Frontend
