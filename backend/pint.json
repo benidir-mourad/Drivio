@@ -1,0 +1,16 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "align_multiline_comment": true,
+        "array_indentation": true,
+        "binary_operator_spaces": {
+            "default": "align_single_space_minimal"
+        },
+        "blank_line_before_statement": {
+            "statements": ["return", "throw", "if", "foreach", "for", "while"]
+        },
+        "ordered_imports": {
+            "sort_algorithm": "alpha"
+        }
+    }
+}
