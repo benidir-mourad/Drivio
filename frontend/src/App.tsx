@@ -1,12 +1,21 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import { authApi } from './features/auth/api/authApi'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import AppLayout from './shared/layout/AppLayout'
 
-const LoginPage    = lazy(() => import('./features/auth/pages/LoginPage'))
-const DashboardPage = lazy(() => import('./features/dashboard/pages/DashboardPage'))
+const LoginPage          = lazy(() => import('./features/auth/pages/LoginPage'))
+const DashboardPage      = lazy(() => import('./features/dashboard/pages/DashboardPage'))
+const StudentsPage       = lazy(() => import('./features/students/pages/StudentsPage'))
+const StudentFormPage    = lazy(() => import('./features/students/pages/StudentFormPage'))
+const StudentDetailPage  = lazy(() => import('./features/students/pages/StudentDetailPage'))
+const InstructorsPage    = lazy(() => import('./features/instructors/pages/InstructorsPage'))
+const InstructorFormPage = lazy(() => import('./features/instructors/pages/InstructorFormPage'))
+const InstructorDetailPage = lazy(() => import('./features/instructors/pages/InstructorDetailPage'))
+const VehiclesPage       = lazy(() => import('./features/vehicles/pages/VehiclesPage'))
+const VehicleFormPage    = lazy(() => import('./features/vehicles/pages/VehicleFormPage'))
+const VehicleDetailPage  = lazy(() => import('./features/vehicles/pages/VehicleDetailPage'))
 
 function PageLoader() {
   return (
@@ -40,7 +49,24 @@ export default function App() {
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          {/* Routes des phases suivantes seront ajoutées ici */}
+
+          {/* Students */}
+          <Route path="students" element={<StudentsPage />} />
+          <Route path="students/new" element={<StudentFormPage />} />
+          <Route path="students/:id" element={<StudentDetailPage />} />
+          <Route path="students/:id/edit" element={<StudentFormPage />} />
+
+          {/* Instructors */}
+          <Route path="instructors" element={<InstructorsPage />} />
+          <Route path="instructors/new" element={<InstructorFormPage />} />
+          <Route path="instructors/:id" element={<InstructorDetailPage />} />
+          <Route path="instructors/:id/edit" element={<InstructorFormPage />} />
+
+          {/* Vehicles */}
+          <Route path="vehicles" element={<VehiclesPage />} />
+          <Route path="vehicles/new" element={<VehicleFormPage />} />
+          <Route path="vehicles/:id" element={<VehicleDetailPage />} />
+          <Route path="vehicles/:id/edit" element={<VehicleFormPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

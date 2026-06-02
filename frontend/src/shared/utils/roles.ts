@@ -8,9 +8,9 @@ export const ROLE_HOME: Record<Role, string> = {
 }
 
 export const ACCESS = {
-  students:    ['admin', 'secretaire'] as Role[],
-  instructors: ['admin', 'secretaire'] as Role[],
-  vehicles:    ['admin', 'secretaire'] as Role[],
+  students:    ['admin', 'secretaire', 'moniteur'] as Role[],
+  instructors: ['admin', 'secretaire', 'moniteur'] as Role[],
+  vehicles:    ['admin', 'secretaire', 'moniteur'] as Role[],
   planning:    ['admin', 'secretaire', 'moniteur'] as Role[],
   pedagogy:    ['admin', 'secretaire', 'moniteur'] as Role[],
   finance:     ['admin', 'secretaire'] as Role[],
