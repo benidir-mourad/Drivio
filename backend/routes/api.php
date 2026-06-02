@@ -3,6 +3,7 @@
 use App\Domains\Eleves\Http\Controllers\StudentController;
 use App\Domains\Identite\Http\Controllers\AuthController;
 use App\Domains\Moniteurs\Http\Controllers\InstructorController;
+use App\Domains\Planning\Http\Controllers\LessonController;
 use App\Domains\Vehicules\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,13 @@ Route::prefix('api/v1')->group(function (): void {
 
         // Vehicles
         Route::apiResource('vehicles', VehicleController::class);
+
+        // Planning — calendar must be registered before the resource to avoid
+        // "calendar" being resolved as a {lesson} route parameter
+        Route::get('lessons/calendar', [LessonController::class, 'calendar']);
+        Route::apiResource('lessons', LessonController::class);
+        Route::patch('lessons/{lesson}/cancel', [LessonController::class, 'cancel']);
+        Route::patch('lessons/{lesson}/complete', [LessonController::class, 'complete']);
+        Route::patch('lessons/{lesson}/no-show', [LessonController::class, 'markNoShow']);
     });
 });

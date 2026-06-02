@@ -6,6 +6,8 @@ use App\Domains\Eleves\Models\Student;
 use App\Domains\Eleves\Policies\StudentPolicy;
 use App\Domains\Moniteurs\Models\Instructor;
 use App\Domains\Moniteurs\Policies\InstructorPolicy;
+use App\Domains\Planning\Models\Lesson;
+use App\Domains\Planning\Policies\LessonPolicy;
 use App\Domains\Vehicules\Models\Vehicle;
 use App\Domains\Vehicules\Policies\VehiclePolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -31,5 +33,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Student::class, StudentPolicy::class);
         Gate::policy(Instructor::class, InstructorPolicy::class);
         Gate::policy(Vehicle::class, VehiclePolicy::class);
+        Gate::policy(Lesson::class, LessonPolicy::class);
     }
 }
