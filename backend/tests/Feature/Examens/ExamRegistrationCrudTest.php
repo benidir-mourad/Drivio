@@ -286,3 +286,116 @@ test('secretaire cannot delete an exam registration', function (): void {
         ->deleteJson("/api/v1/exam-registrations/{$exam->id}")
         ->assertForbidden();
 });
+
+// --- reexamen types ---
+
+test('reexamen_theorique is stored and identified as theory', function (): void {
+    $admin = User::factory()->create()->assignRole('admin');
+
+    $this->actingAs($admin)
+        ->postJson('/api/v1/exam-registrations', examPayload(['type' => 'reexamen_theorique']))
+        ->assertCreated()
+        ->assertJsonPath('data.type', 'reexamen_theorique')
+        ->assertJsonPath('data.is_theory', true);
+});
+
+test('reexamen_pratique is stored and not identified as theory', function (): void {
+    $admin = User::factory()->create()->assignRole('admin');
+
+    $this->actingAs($admin)
+        ->postJson('/api/v1/exam-registrations', examPayload(['type' => 'reexamen_pratique']))
+        ->assertCreated()
+        ->assertJsonPath('data.is_theory', false);
+});
+
+// --- date filters ---
+
+test('index filters by date_from', function (): void {
+    $admin   = User::factory()->create()->assignRole('admin');
+    $student = Student::factory()->create();
+
+    ExamRegistration::factory()->create(['student_id' => $student->id, 'scheduled_date' => '2030-03-01']);
+    ExamRegistration::factory()->create(['student_id' => $student->id, 'scheduled_date' => '2030-04-15']);
+
+    $this->actingAs($admin)
+        ->getJson('/api/v1/exam-registrations?date_from=2030-04-01')
+        ->assertOk()
+        ->assertJsonCount(1, 'data');
+});
+
+test('index filters by date_to', function (): void {
+    $admin   = User::factory()->create()->assignRole('admin');
+    $student = Student::factory()->create();
+
+    ExamRegistration::factory()->create(['student_id' => $student->id, 'scheduled_date' => '2030-03-01']);
+    ExamRegistration::factory()->create(['student_id' => $student->id, 'scheduled_date' => '2030-04-15']);
+
+    $this->actingAs($admin)
+        ->getJson('/api/v1/exam-registrations?date_to=2030-03-31')
+        ->assertOk()
+        ->assertJsonCount(1, 'data');
+});
+
+// --- moniteur role ---
+
+test('moniteur can list exam registrations', function (): void {
+    $moniteur = User::factory()->create()->assignRole('moniteur');
+    makeExam();
+
+    $this->actingAs($moniteur)
+        ->getJson('/api/v1/exam-registrations')
+        ->assertOk();
+});
+
+test('moniteur can view any exam registration', function (): void {
+    $moniteur = User::factory()->create()->assignRole('moniteur');
+    $exam     = makeExam();
+
+    $this->actingAs($moniteur)
+        ->getJson("/api/v1/exam-registrations/{$exam->id}")
+        ->assertOk();
+});
+
+// --- cancelled result ---
+
+test('admin can record a cancelled result', function (): void {
+    $admin = User::factory()->create()->assignRole('admin');
+    $exam  = makeExam();
+
+    $this->actingAs($admin)
+        ->patchJson("/api/v1/exam-registrations/{$exam->id}/result", ['status' => 'cancelled'])
+        ->assertOk()
+        ->assertJsonPath('data.status', 'cancelled')
+        ->assertJsonPath('data.score', null);
+});
+
+// --- stats edge cases ---
+
+test('stats returns zero counts for types with no data', function (): void {
+    $admin = User::factory()->create()->assignRole('admin');
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/v1/exam-registrations/stats?year=2099')
+        ->assertOk();
+
+    expect($response->json('data.theorique.total'))->toBe(0)
+        ->and($response->json('data.theorique.rate'))->toBeNull();
+});
+
+test('stats includes reexamen types', function (): void {
+    $admin   = User::factory()->create()->assignRole('admin');
+    $student = Student::factory()->create();
+
+    ExamRegistration::factory()->passed()->create([
+        'student_id'     => $student->id,
+        'type'           => 'reexamen_theorique',
+        'scheduled_date' => '2030-11-10',
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/v1/exam-registrations/stats?year=2030')
+        ->assertOk();
+
+    expect($response->json('data.reexamen_theorique.passed'))->toBe(1)
+        ->and($response->json('data.reexamen_theorique.rate'))->toBe(100);
+});

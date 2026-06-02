@@ -110,3 +110,57 @@ test('student store accepts new filiere fields', function (): void {
         ->assertJsonPath('data.filiere', 'cap')
         ->assertJsonPath('data.dossier_number', 'GOCA-2026-0042');
 });
+
+test('accompagnement bilan and examen_blanc count toward hours_completed', function (): void {
+    $admin      = User::factory()->create()->assignRole('admin');
+    $student    = Student::factory()->create();
+    $instructor = Instructor::factory()->create();
+
+    foreach (['accompagnement', 'bilan', 'examen_blanc'] as $type) {
+        Lesson::factory()->create([
+            'student_id'    => $student->id,
+            'instructor_id' => $instructor->id,
+            'starts_at'     => '2030-04-01 09:00',
+            'ends_at'       => '2030-04-01 10:00',
+            'type'          => $type,
+            'status'        => 'completed',
+        ]);
+    }
+
+    $this->actingAs($admin)
+        ->getJson("/api/v1/students/{$student->id}")
+        ->assertOk()
+        ->assertJsonPath('data.hours_completed', 3);
+});
+
+test('cancelled lessons do not count toward hours_completed', function (): void {
+    $admin      = User::factory()->create()->assignRole('admin');
+    $student    = Student::factory()->create();
+    $instructor = Instructor::factory()->create();
+
+    Lesson::factory()->create([
+        'student_id'    => $student->id,
+        'instructor_id' => $instructor->id,
+        'starts_at'     => '2030-05-01 09:00',
+        'ends_at'       => '2030-05-01 10:00',
+        'type'          => 'conduite',
+        'status'        => 'cancelled',
+    ]);
+
+    $this->actingAs($admin)
+        ->getJson("/api/v1/students/{$student->id}")
+        ->assertOk()
+        ->assertJsonPath('data.hours_completed', 0);
+});
+
+test('hours_completed is absent from the list response', function (): void {
+    $admin = User::factory()->create()->assignRole('admin');
+    Student::factory()->create();
+
+    $response = $this->actingAs($admin)
+        ->getJson('/api/v1/students')
+        ->assertOk();
+
+    // hours_completed should NOT be in the paginated list (only in show)
+    expect($response->json('data.0'))->not->toHaveKey('hours_completed');
+});
