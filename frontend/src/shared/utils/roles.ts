@@ -13,6 +13,7 @@ export const ACCESS = {
   vehicles:    ['admin', 'secretaire', 'moniteur'] as Role[],
   planning:    ['admin', 'secretaire', 'moniteur', 'eleve'] as Role[],
   pedagogy:    ['admin', 'secretaire', 'moniteur'] as Role[],
+  examens:     ['admin', 'secretaire', 'moniteur', 'eleve'] as Role[],
   finance:     ['admin', 'secretaire'] as Role[],
   settings:    ['admin'] as Role[],
   own_data:    ['eleve'] as Role[],

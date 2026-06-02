@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Eleves\Http\Controllers\StudentController;
+use App\Domains\Examens\Http\Controllers\ExamRegistrationController;
 use App\Domains\Identite\Http\Controllers\AuthController;
 use App\Domains\Moniteurs\Http\Controllers\InstructorController;
 use App\Domains\Planning\Http\Controllers\LessonController;
@@ -45,5 +46,10 @@ Route::prefix('api/v1')->group(function (): void {
         Route::patch('lessons/{lesson}/cancel', [LessonController::class, 'cancel']);
         Route::patch('lessons/{lesson}/complete', [LessonController::class, 'complete']);
         Route::patch('lessons/{lesson}/no-show', [LessonController::class, 'markNoShow']);
+
+        // Examens — stats before resource to avoid route param ambiguity
+        Route::get('exam-registrations/stats', [ExamRegistrationController::class, 'stats']);
+        Route::apiResource('exam-registrations', ExamRegistrationController::class);
+        Route::patch('exam-registrations/{exam_registration}/result', [ExamRegistrationController::class, 'recordResult']);
     });
 });

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Domains\Eleves\Models\Student;
 use App\Domains\Eleves\Policies\StudentPolicy;
+use App\Domains\Examens\Models\ExamRegistration;
+use App\Domains\Examens\Policies\ExamRegistrationPolicy;
 use App\Domains\Moniteurs\Models\Instructor;
 use App\Domains\Moniteurs\Policies\InstructorPolicy;
 use App\Domains\Planning\Models\Lesson;
@@ -34,5 +36,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Instructor::class, InstructorPolicy::class);
         Gate::policy(Vehicle::class, VehiclePolicy::class);
         Gate::policy(Lesson::class, LessonPolicy::class);
+        Gate::policy(ExamRegistration::class, ExamRegistrationPolicy::class);
     }
 }

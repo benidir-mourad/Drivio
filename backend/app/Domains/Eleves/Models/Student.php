@@ -2,6 +2,8 @@
 
 namespace App\Domains\Eleves\Models;
 
+use App\Domains\Examens\Models\ExamRegistration;
+use App\Domains\Planning\Models\Lesson;
 use App\Models\User;
 use Database\Factories\StudentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,12 +35,16 @@ class Student extends Model
         'license_category',
         'enrollment_date',
         'status',
+        'filiere',
+        'hours_objective',
+        'dossier_number',
         'notes',
     ];
 
     protected $casts = [
         'date_of_birth'   => 'date',
         'enrollment_date' => 'date',
+        'hours_objective' => 'integer',
     ];
 
     /** @return BelongsTo<User, $this> */
@@ -53,8 +59,33 @@ class Student extends Model
         return $this->hasMany(StudentDocument::class);
     }
 
+    /** @return HasMany<Lesson, $this> */
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class);
+    }
+
+    /** @return HasMany<ExamRegistration, $this> */
+    public function examRegistrations(): HasMany
+    {
+        return $this->hasMany(ExamRegistration::class);
+    }
+
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    /** Total driving hours completed (lessons with status completed or no_show). */
+    public function getHoursCompletedAttribute(): float
+    {
+        return round(
+            $this->lessons()
+                ->whereIn('status', ['completed', 'no_show'])
+                ->whereIn('type', ['conduite', 'accompagnement', 'bilan', 'examen_blanc'])
+                ->get()
+                ->sum(fn (Lesson $l) => $l->duration_minutes) / 60,
+            1
+        );
     }
 }

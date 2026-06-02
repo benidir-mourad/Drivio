@@ -16,9 +16,10 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/students',    label: 'Élèves',           roles: ACCESS.students },
   { to: '/instructors', label: 'Moniteurs',        roles: ACCESS.instructors },
   { to: '/vehicles',    label: 'Véhicules',        roles: ACCESS.vehicles },
-  { to: '/planning',          label: 'Planning',  roles: ACCESS.planning },
-  { to: '/planning/lessons',  label: 'Séances',   roles: ACCESS.planning },
-  { to: '/pedagogy',    label: 'Pédagogie',         roles: ACCESS.pedagogy },
+  { to: '/planning',          label: 'Planning',     roles: ACCESS.planning },
+  { to: '/planning/lessons',  label: 'Séances',      roles: ACCESS.planning },
+  { to: '/examens',           label: 'Examens',      roles: ACCESS.examens },
+  { to: '/examens/stats',     label: 'Statistiques', roles: ACCESS.pedagogy },
   { to: '/finance',     label: 'Facturation',       roles: ACCESS.finance },
   { to: '/settings',    label: 'Paramètres',        roles: ACCESS.settings },
 ]

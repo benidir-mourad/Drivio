@@ -24,6 +24,9 @@ class StoreStudentRequest extends FormRequest
             'license_category' => ['required', 'in:A,A1,A2,AM,B,B1,BE,C,CE,D'],
             'enrollment_date'  => ['required', 'date'],
             'status'           => ['sometimes', 'in:active,suspended,graduated'],
+            'filiere'          => ['sometimes', 'in:classique,cap'],
+            'hours_objective'  => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'dossier_number'   => ['nullable', 'string', 'max:50'],
             'notes'            => ['nullable', 'string'],
             'user_id'          => ['nullable', 'exists:users,id'],
         ];

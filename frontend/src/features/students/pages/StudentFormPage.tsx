@@ -17,6 +17,9 @@ const schema = z.object({
   license_category: z.enum(['A', 'A1', 'A2', 'AM', 'B', 'B1', 'BE', 'C', 'CE', 'D'] as const),
   enrollment_date:  z.string().min(1, 'Requis'),
   status:           z.enum(['active', 'suspended', 'graduated'] as const).optional(),
+  filiere:          z.enum(['classique', 'cap'] as const).optional(),
+  hours_objective:  z.string().optional(),
+  dossier_number:   z.string().max(50).optional(),
   notes:            z.string().optional(),
 })
 
@@ -49,7 +52,7 @@ export default function StudentFormPage() {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { license_category: 'B', status: 'active' },
+    defaultValues: { license_category: 'B', status: 'active', filiere: 'classique', hours_objective: '20' },
   })
 
   useEffect(() => {
@@ -64,15 +67,30 @@ export default function StudentFormPage() {
         license_category: student.license_category,
         enrollment_date:  student.enrollment_date,
         status:           student.status,
+        filiere:          student.filiere,
+        hours_objective:  String(student.hours_objective),
+        dossier_number:   student.dossier_number ?? '',
         notes:            student.notes ?? '',
       })
     }
   }, [student, reset])
 
   const onSubmit = (values: FormValues) => {
-    const payload = Object.fromEntries(
-      Object.entries(values).map(([k, v]) => [k, v === '' ? null : v])
-    ) as FormValues
+    const payload = {
+      first_name:       values.first_name,
+      last_name:        values.last_name,
+      email:            values.email,
+      phone:            values.phone || null,
+      address:          values.address || null,
+      date_of_birth:    values.date_of_birth || null,
+      license_category: values.license_category,
+      enrollment_date:  values.enrollment_date,
+      status:           values.status,
+      filiere:          values.filiere,
+      hours_objective:  values.hours_objective ? parseInt(values.hours_objective, 10) : undefined,
+      dossier_number:   values.dossier_number || null,
+      notes:            values.notes || null,
+    }
 
     if (isEdit) {
       updateStudent.mutate(payload, {
@@ -144,6 +162,22 @@ export default function StudentFormPage() {
               <option value="suspended">Suspendu</option>
               <option value="graduated">Diplômé</option>
             </select>
+          </Field>
+        </div>
+
+        {/* Belgian-specific fields */}
+        <div className="grid grid-cols-3 gap-4">
+          <Field label="Filière" error={errors.filiere?.message}>
+            <select {...register('filiere')} className={inputCls}>
+              <option value="classique">Classique (20h)</option>
+              <option value="cap">CAP (6h)</option>
+            </select>
+          </Field>
+          <Field label="Objectif heures" error={errors.hours_objective?.message}>
+            <input {...register('hours_objective')} type="number" min={1} max={100} className={inputCls} />
+          </Field>
+          <Field label="N° dossier centre" error={errors.dossier_number?.message}>
+            <input {...register('dossier_number')} className={inputCls} placeholder="ex : GOCA-2026-001" />
           </Field>
         </div>
 

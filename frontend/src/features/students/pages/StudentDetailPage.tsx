@@ -50,11 +50,16 @@ export default function StudentDetailPage() {
           <h1 className="text-xl font-bold text-gray-900">{student.full_name}</h1>
           <StatusBadge status={student.status} />
         </div>
-        {canEdit && (
-          <Button to={`/students/${student.id}/edit`} variant="outline">
-            Modifier
+        <div className="flex items-center gap-2">
+          <Button to={`/students/${student.id}/pedagogy`} variant="secondary" size="sm">
+            Pédagogie
           </Button>
-        )}
+          {canEdit && (
+            <Button to={`/students/${student.id}/edit`} variant="outline" size="sm">
+              Modifier
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Info card */}

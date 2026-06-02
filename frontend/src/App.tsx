@@ -5,19 +5,22 @@ import { authApi } from './features/auth/api/authApi'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import AppLayout from './shared/layout/AppLayout'
 
-const LoginPage             = lazy(() => import('./features/auth/pages/LoginPage'))
-const DashboardPage         = lazy(() => import('./features/dashboard/pages/DashboardPage'))
-const StudentsPage          = lazy(() => import('./features/students/pages/StudentsPage'))
-const StudentFormPage       = lazy(() => import('./features/students/pages/StudentFormPage'))
-const StudentDetailPage     = lazy(() => import('./features/students/pages/StudentDetailPage'))
-const InstructorsPage       = lazy(() => import('./features/instructors/pages/InstructorsPage'))
-const InstructorFormPage    = lazy(() => import('./features/instructors/pages/InstructorFormPage'))
-const InstructorDetailPage  = lazy(() => import('./features/instructors/pages/InstructorDetailPage'))
-const VehiclesPage          = lazy(() => import('./features/vehicles/pages/VehiclesPage'))
-const VehicleFormPage       = lazy(() => import('./features/vehicles/pages/VehicleFormPage'))
-const VehicleDetailPage     = lazy(() => import('./features/vehicles/pages/VehicleDetailPage'))
-const PlanningPage          = lazy(() => import('./features/planning/pages/PlanningPage'))
-const LessonsListPage       = lazy(() => import('./features/planning/pages/LessonsListPage'))
+const LoginPage              = lazy(() => import('./features/auth/pages/LoginPage'))
+const DashboardPage          = lazy(() => import('./features/dashboard/pages/DashboardPage'))
+const StudentsPage           = lazy(() => import('./features/students/pages/StudentsPage'))
+const StudentFormPage        = lazy(() => import('./features/students/pages/StudentFormPage'))
+const StudentDetailPage      = lazy(() => import('./features/students/pages/StudentDetailPage'))
+const StudentPedagogyPage    = lazy(() => import('./features/students/pages/StudentPedagogyPage'))
+const InstructorsPage        = lazy(() => import('./features/instructors/pages/InstructorsPage'))
+const InstructorFormPage     = lazy(() => import('./features/instructors/pages/InstructorFormPage'))
+const InstructorDetailPage   = lazy(() => import('./features/instructors/pages/InstructorDetailPage'))
+const VehiclesPage           = lazy(() => import('./features/vehicles/pages/VehiclesPage'))
+const VehicleFormPage        = lazy(() => import('./features/vehicles/pages/VehicleFormPage'))
+const VehicleDetailPage      = lazy(() => import('./features/vehicles/pages/VehicleDetailPage'))
+const PlanningPage           = lazy(() => import('./features/planning/pages/PlanningPage'))
+const LessonsListPage        = lazy(() => import('./features/planning/pages/LessonsListPage'))
+const ExamensPage            = lazy(() => import('./features/examens/pages/ExamensPage'))
+const ExamenStatsPage        = lazy(() => import('./features/examens/pages/ExamenStatsPage'))
 
 function PageLoader() {
   return (
@@ -57,6 +60,7 @@ export default function App() {
           <Route path="students/new" element={<StudentFormPage />} />
           <Route path="students/:id" element={<StudentDetailPage />} />
           <Route path="students/:id/edit" element={<StudentFormPage />} />
+          <Route path="students/:id/pedagogy" element={<StudentPedagogyPage />} />
 
           {/* Instructors */}
           <Route path="instructors" element={<InstructorsPage />} />
@@ -73,6 +77,10 @@ export default function App() {
           {/* Planning */}
           <Route path="planning" element={<PlanningPage />} />
           <Route path="planning/lessons" element={<LessonsListPage />} />
+
+          {/* Examens */}
+          <Route path="examens" element={<ExamensPage />} />
+          <Route path="examens/stats" element={<ExamenStatsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

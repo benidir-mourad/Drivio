@@ -1,5 +1,6 @@
 export type LicenseCategory = 'A' | 'A1' | 'A2' | 'AM' | 'B' | 'B1' | 'BE' | 'C' | 'CE' | 'D'
 export type StudentStatus = 'active' | 'suspended' | 'graduated'
+export type Filiere = 'classique' | 'cap'
 export type DocumentType = 'identity_card' | 'photo' | 'medical_cert' | 'driving_history' | 'other'
 
 export interface StudentDocument {
@@ -24,9 +25,13 @@ export interface Student {
   license_category: LicenseCategory
   enrollment_date: string
   status: StudentStatus
+  filiere: Filiere
+  hours_objective: number
+  dossier_number: string | null
   notes: string | null
   user_id: number | null
   documents?: StudentDocument[]
+  hours_completed?: number
   created_at: string | null
   updated_at: string | null
 }
@@ -41,6 +46,9 @@ export interface StudentPayload {
   license_category: LicenseCategory
   enrollment_date: string
   status?: StudentStatus
+  filiere?: Filiere
+  hours_objective?: number
+  dossier_number?: string | null
   notes?: string | null
   user_id?: number | null
 }

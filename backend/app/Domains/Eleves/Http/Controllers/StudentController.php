@@ -49,7 +49,7 @@ class StudentController extends Controller
     {
         $this->authorize('view', $student);
 
-        return new StudentResource($student->load('documents'));
+        return new StudentResource($student->load(['documents', 'lessons']));
     }
 
     public function store(StoreStudentRequest $request): JsonResponse

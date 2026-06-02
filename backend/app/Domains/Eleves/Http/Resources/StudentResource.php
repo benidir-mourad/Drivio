@@ -23,11 +23,19 @@ class StudentResource extends JsonResource
             'license_category' => $this->license_category,
             'enrollment_date'  => $this->enrollment_date->toDateString(),
             'status'           => $this->status,
+            'filiere'          => $this->filiere,
+            'hours_objective'  => $this->hours_objective,
+            'dossier_number'   => $this->dossier_number,
             'notes'            => $this->notes,
             'user_id'          => $this->user_id,
             'documents'        => StudentDocumentResource::collection($this->whenLoaded('documents')),
-            'created_at'       => $this->created_at?->toDateTimeString(),
-            'updated_at'       => $this->updated_at?->toDateTimeString(),
+            // Pedagogie stats — included when lessons are loaded
+            'hours_completed' => $this->when(
+                $this->relationLoaded('lessons'),
+                fn () => $this->hours_completed,
+            ),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }
